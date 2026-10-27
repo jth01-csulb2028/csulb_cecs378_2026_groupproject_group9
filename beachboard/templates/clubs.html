@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Campus clubs</h1>
+<form action="{{ url_for('search_clubs') }}" method="get" class="search">
+  <input name="q" value="{{ query or '' }}" aria-label="Search clubs">
+  <button>Search</button>
+</form>
+<div class="grid">
+{% for club in clubs %}
+  <article class="card"><h2><a href="{{ url_for('club_detail', club_id=club['id']) }}">{{ club['name'] }}</a></h2><p>{{ club['description']|safe }}</p></article>
+{% else %}
+  <p>No clubs matched.</p>
+{% endfor %}
+</div>
+{% endblock %}

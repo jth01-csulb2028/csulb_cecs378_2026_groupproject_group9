@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Your profile</h1>
+<form method="post" class="card">
+  <label>Display name <input name="display_name" value="{{ g.user['display_name'] }}" required></label>
+  <label>Email <input name="email" type="email" value="{{ g.user['email'] }}" required></label>
+  <label>Date of birth <input name="date_of_birth" type="date" value="{{ g.user['date_of_birth'] or '' }}"></label>
+  <label>Social Security number <input name="government_id" value="{{ g.user['government_id'] or '' }}"></label>
+  <button>Save</button>
+</form>
+{% endblock %}

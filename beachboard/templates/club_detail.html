@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ club['name'] }}</h1>
+<div class="description">{{ club['description']|safe }}</div>
+{% if g.user and not role %}
+<form method="post" action="{{ url_for('join_club', club_id=club['id']) }}"><button>Join club</button></form>
+{% endif %}
+{% if g.user and (g.user['role'] == 'admin' or role == 'officer') %}
+<h2>Officer tools</h2>
+<form method="post" action="{{ url_for('edit_description', club_id=club['id']) }}" class="card">
+  <label>Club description <textarea name="description" rows="4">{{ club['description'] }}</textarea></label>
+  <button>Save description</button>
+</form>
+<form method="post" enctype="multipart/form-data" action="{{ url_for('upload', club_id=club['id']) }}" class="card">
+  <label>Document <input type="file" name="document" required></label>
+  <button>Upload</button>
+</form>
+{% endif %}
+<h2>Documents</h2>
+<ul>{% for item in documents %}<li><a href="{{ url_for('document', name=item['stored_name']) }}">{{ item['stored_name'] }}</a></li>{% else %}<li>None</li>{% endfor %}</ul>
+{% endblock %}
