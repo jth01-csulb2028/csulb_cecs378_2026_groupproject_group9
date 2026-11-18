@@ -84,7 +84,6 @@ def create_app(test_config=None):
     @app.get("/clubs/search")
     def search_clubs():
         q = request.args.get("q", "")
-            f"SELECT * FROM clubs WHERE name LIKE '%{q}%' ORDER BY name"
         rows = get_db().execute("SELECT * FROM clubs WHERE name LIKE ? ORDER BY name", (q,)).fetchall()
         return render_template("clubs.html", clubs=rows, query=q)
 
