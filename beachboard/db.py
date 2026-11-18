@@ -33,13 +33,13 @@ def close_db(_error=None):
 
 
 USERS = [
-    ("student1", "learn-security", "student", "Avery Nguyen", "avery@example.test", "2005-03-14", "612-48-3301"),
-    ("student2", "learn-security", "student", "Blake Ramirez", "blake@example.test", "2004-11-02", "580-27-9146"),
-    ("officer1", "learn-security", "officer", "Casey Patel", "casey@example.test", "2003-07-21", "547-90-1182"),
+    ("student1", "learn-security", "student", "Avery Nguyen", "avery@example.test"),
+    ("student2", "learn-security", "student", "Blake Ramirez", "blake@example.test"),
+    ("officer1", "learn-security", "officer", "Casey Patel", "casey@example.test"),
 ]
 
 # admin1 is seeded from its stored hash.
-ADMIN = ("admin1", "459cea1e644eed0c981862ebfa45ca40", "admin", "Riley Chen", "riley@example.test", "1991-05-30", "603-15-7724")
+ADMIN = ("admin1", "459cea1e644eed0c981862ebfa45ca40", "admin", "Riley Chen", "riley@example.test")
 
 
 def init_db():
@@ -47,9 +47,9 @@ def init_db():
     db.executescript(Path(__file__).with_name("schema.sql").read_text())
     db.executemany(
         """INSERT INTO users
-           (username, password_hash, role, display_name, email, date_of_birth, government_id)
-           VALUES (?, ?, ?, ?, ?, ?, ?)""",
-        [(u, password_hash(p), r, n, e, d, s) for u, p, r, n, e, d, s in USERS] + [ADMIN],
+           (username, password_hash, role, display_name, email)
+           VALUES (?, ?, ?, ?, ?)""",
+        [(u, password_hash(p), r, n, e) for u, p, r, n, e in USERS] + [ADMIN],
     )
     db.executemany(
         "INSERT INTO clubs (name, description) VALUES (?, ?)",

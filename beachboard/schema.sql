@@ -10,9 +10,7 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     role TEXT NOT NULL CHECK (role IN ('student', 'officer', 'admin')),
     display_name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    date_of_birth TEXT,
-    government_id TEXT
+    email TEXT
 );
 
 CREATE TABLE clubs (
