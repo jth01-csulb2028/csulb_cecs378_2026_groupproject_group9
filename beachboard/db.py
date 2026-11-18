@@ -11,7 +11,7 @@ from flask import current_app, g
 def password_hash(password: str, salt: str) -> str:
     # salt encode 2, just to make sure passwords are diff
     # use username as salt, not best practice but good for this specific need 
-    return str(hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 8))
+    return hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 8).hex()
 
 
 def check_password(stored: str, password: str, username: str) -> bool:
