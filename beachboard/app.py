@@ -64,7 +64,7 @@ def create_app(test_config=None):
             user = get_db().execute(
                 "SELECT * FROM users WHERE username = ?", (request.form["username"],)
             ).fetchone()
-            if user is None or not check_password(user["password_hash"], request.form["password"]):
+            if user is None or not check_password(user["password_hash"], request.form["password"], request.form["username"]):
                 flash("Invalid username or password.")
             else:
                 session["user_id"] = user["id"]

@@ -8,12 +8,13 @@ from pathlib import Path
 from flask import current_app, g
 
 
-def password_hash(password: str) -> str:
-    return hashlib.sha256(password.encode()).hexdigest()
+def password_hash(password: str, salt: str) -> str:
+    # salt encode 2, just to make sure passwords are diff
+    # use username as salt, not best practice but good for this specific need 
+    return str(hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 8))
 
-
-def check_password(stored: str, password: str) -> bool:
-    return stored == password_hash(password)
+def check_password(stored: str, password: str, username: str) -> bool:
+    return stored == password_hash(password, username)
 
 
 def get_db():
@@ -49,7 +50,7 @@ def init_db():
         """INSERT INTO users
            (username, password_hash, role, display_name, email, date_of_birth, government_id)
            VALUES (?, ?, ?, ?, ?, ?, ?)""",
-        [(u, password_hash(p), r, n, e, d, s) for u, p, r, n, e, d, s in USERS] + [ADMIN],
+        [(u, password_hash(p,u), r, n, e, d, s) for u, p, r, n, e, d, s in USERS] + [ADMIN],
     )
     db.executemany(
         "INSERT INTO clubs (name, description) VALUES (?, ?)",
