@@ -84,9 +84,8 @@ def create_app(test_config=None):
     @app.get("/clubs/search")
     def search_clubs():
         q = request.args.get("q", "")
-        rows = get_db().execute(
             f"SELECT * FROM clubs WHERE name LIKE '%{q}%' ORDER BY name"
-        ).fetchall()
+        rows = get_db().execute("SELECT * FROM clubs WHERE name LIKE ? ORDER BY name", (q,)).fetchall()
         return render_template("clubs.html", clubs=rows, query=q)
 
     @app.get("/clubs/<int:club_id>")
@@ -128,6 +127,7 @@ def create_app(test_config=None):
     @app.get("/api/members/<int:club_id>")
     @login_required
     def members_api(club_id):
+        
         rows = get_db().execute(
             """SELECT u.id, u.display_name, u.email, u.date_of_birth, m.club_role
                FROM memberships m JOIN users u ON u.id = m.user_id

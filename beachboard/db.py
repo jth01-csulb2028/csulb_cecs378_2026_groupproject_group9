@@ -13,6 +13,7 @@ def password_hash(password: str, salt: str) -> str:
     # use username as salt, not best practice but good for this specific need 
     return str(hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 8))
 
+
 def check_password(stored: str, password: str, username: str) -> bool:
     return stored == password_hash(password, username)
 
