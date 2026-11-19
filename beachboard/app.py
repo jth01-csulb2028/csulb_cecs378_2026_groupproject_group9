@@ -144,7 +144,8 @@ def create_app(test_config=None):
         uploaded = request.files.get("document")
         if uploaded is None or not uploaded.filename:
             abort(400)
-        uploaded.save(os.path.join(app.config["UPLOAD_FOLDER"], uploaded.filename))
+        abbrev_filename = Path(os.path.join(app.config["UPLOAD_FOLDER"], uploaded.filename)).name
+        uploaded.save(os.path.join(app.config["UPLOAD_FOLDER"], abbrev_filename))
         get_db().execute(
             "INSERT INTO documents (club_id, stored_name, uploaded_by) VALUES (?, ?, ?)",
             (club_id, uploaded.filename, g.user["id"]),
