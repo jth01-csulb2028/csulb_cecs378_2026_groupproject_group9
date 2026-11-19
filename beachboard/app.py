@@ -126,9 +126,10 @@ def create_app(test_config=None):
     @app.get("/api/members/<int:club_id>")
     @login_required
     def members_api(club_id):
-        
+        if g.user["role"] != "admin" and club_role(club_id) is None:
+            abort(403)
         rows = get_db().execute(
-            """SELECT u.id, u.display_name, u.email, u.date_of_birth, m.club_role
+            """SELECT u.id, u.display_name, u.email, m.club_role
                FROM memberships m JOIN users u ON u.id = m.user_id
                WHERE m.club_id = ? ORDER BY u.display_name""",
             (club_id,),
@@ -163,13 +164,10 @@ def create_app(test_config=None):
     def profile():
         if request.method == "POST":
             get_db().execute(
-                """UPDATE users SET display_name = ?, email = ?, date_of_birth = ?,
-                   government_id = ? WHERE id = ?""",
+                """UPDATE users SET display_name = ?, email = ? WHERE id = ?""",
                 (
                     request.form["display_name"],
                     request.form["email"],
-                    request.form.get("date_of_birth", ""),
-                    request.form.get("government_id", ""),
                     g.user["id"],
                 ),
             )
@@ -199,7 +197,7 @@ def create_app(test_config=None):
     @require_role("admin")
     def admin_export():
         rows = get_db().execute(
-            "SELECT username, role, display_name, email, date_of_birth, government_id FROM users"
+            "SELECT username, role, display_name, email FROM users"
         ).fetchall()
         output = io.StringIO()
         writer = csv.writer(output)
