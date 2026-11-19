@@ -158,6 +158,10 @@ def create_app(test_config=None):
     @login_required
     def document():
         name = request.args.get("name", "")
+        clubs_list = [item for t in get_db().execute("SELECT club_id FROM documents WHERE stored_name = ?", (name,)).fetchall() for item in t] 
+        user_clubs = [item for t in get_db().execute("SELECT club_id FROM memberships WHERE user_id = ?", (session["user_id"],)).fetchall() for item in t]
+        if not any(item in clubs_list for item in user_clubs) and not g.user["role"] == "admin":
+            abort(401)
         return send_file(os.path.join(app.config["UPLOAD_FOLDER"], name))
 
     @app.route("/profile", methods=("GET", "POST"))
